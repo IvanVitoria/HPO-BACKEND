@@ -1,0 +1,19 @@
+{
+  "name": "hpo-backend",
+  "version": "1.0.0",
+  "description": "HPO-BACKEND",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-IvanVitoria:IvanVitoria/HPO-BACKEND.git"
+  },
+  "author": "Ivan Vitoria",
+  "license": "GPLV3",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^5.2.1"
+  }
+}
