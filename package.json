@@ -4,7 +4,8 @@
   "description": "HPO-BACKEND",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -13,7 +14,12 @@
   "author": "Ivan Vitoria",
   "license": "GPLV3",
   "dependencies": {
+    "@types/express": "^4.17.7",
     "express": "^4.17.1",
-    "puppeteer": "^5.2.1"
+    "puppeteer": "^5.2.1",
+    "typescript": "^3.9.7"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^3.0.1"
   }
 }
