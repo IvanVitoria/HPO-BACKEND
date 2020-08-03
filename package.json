@@ -11,5 +11,8 @@
     "url": "git@github.com-IvanVitoria:IvanVitoria/HPO-BACKEND.git"
   },
   "author": "Ivan Vitoria",
-  "license": "ISC"
+  "license": "GPLV3",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
