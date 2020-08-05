@@ -38,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Crawler = void 0;
 var puppeteer = require("puppeteer");
-var announcement_model_1 = require("./model/announcement.model");
 var Crawler = /** @class */ (function () {
     function Crawler(pageNumber) {
         this.pageNumber = pageNumber;
@@ -47,28 +46,46 @@ var Crawler = /** @class */ (function () {
     ;
     Crawler.prototype.crawl = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var announcement, browser, page;
+            var browser, page, resultsSelector, links, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.info("Fetching URL: " + this.HPO_URL);
-                        announcement = new announcement_model_1.Annoucement();
-                        return [4 /*yield*/, puppeteer.launch()];
+                        _a.label = 1;
                     case 1:
+                        _a.trys.push([1, 7, 8, 9]);
+                        return [4 /*yield*/, puppeteer.launch()];
+                    case 2:
                         browser = _a.sent();
                         return [4 /*yield*/, browser.newPage()];
-                    case 2:
+                    case 3:
                         page = _a.sent();
                         return [4 /*yield*/, page.goto(this.HPO_URL)];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, page.screenshot({ path: 'crawler.png' })];
                     case 4:
                         _a.sent();
-                        return [4 /*yield*/, browser.close()];
+                        resultsSelector = '.notdcha a';
+                        return [4 /*yield*/, page.evaluate(function (resultsSelector) {
+                                var anchors = Array.from(document.querySelectorAll(resultsSelector));
+                                return anchors.map(function (anchor) {
+                                    //const title = anchor.textContent.split('|')[0].trim();
+                                    return "" + anchor.href;
+                                });
+                            }, resultsSelector)];
                     case 5:
+                        links = _a.sent();
+                        console.log(links.join('\n'));
+                        return [4 /*yield*/, browser.close()];
+                    case 6:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 9];
+                    case 7:
+                        error_1 = _a.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 9];
+                    case 8:
+                        console.info("Finished to crawl URL: " + this.HPO_URL);
+                        return [7 /*endfinally*/];
+                    case 9: return [2 /*return*/];
                 }
             });
         });
@@ -76,7 +93,3 @@ var Crawler = /** @class */ (function () {
     return Crawler;
 }());
 exports.Crawler = Crawler;
-(function () {
-    var crawler = new Crawler(2);
-    crawler.crawl();
-})();

@@ -36,47 +36,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Crawler = void 0;
-var puppeteer = require("puppeteer");
-var announcement_model_1 = require("./model/announcement.model");
-var Crawler = /** @class */ (function () {
-    function Crawler(pageNumber) {
-        this.pageNumber = pageNumber;
-        this.HPO_URL = "http://www.registresolicitants.cat/registre/noticias/03_noticias.jsp?numpagactual=" + this.pageNumber;
+exports.HPO = void 0;
+var crawler_service_1 = require("./crawler.service");
+var HPO = /** @class */ (function () {
+    function HPO() {
     }
-    ;
-    Crawler.prototype.crawl = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var announcement, browser, page;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.info("Fetching URL: " + this.HPO_URL);
-                        announcement = new announcement_model_1.Annoucement();
-                        return [4 /*yield*/, puppeteer.launch()];
-                    case 1:
-                        browser = _a.sent();
-                        return [4 /*yield*/, browser.newPage()];
-                    case 2:
-                        page = _a.sent();
-                        return [4 /*yield*/, page.goto(this.HPO_URL)];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, page.screenshot({ path: 'crawler.png' })];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, browser.close()];
-                    case 5:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return Crawler;
+    return HPO;
 }());
-exports.Crawler = Crawler;
-(function () {
-    var crawler = new Crawler(2);
-    crawler.crawl();
-})();
+exports.HPO = HPO;
+(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ind, crawler;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                ind = 0;
+                _a.label = 1;
+            case 1:
+                if (!(ind < 2)) return [3 /*break*/, 4];
+                console.info(">>>>> Starting to Crawl page " + ind);
+                crawler = new crawler_service_1.Crawler(ind);
+                return [4 /*yield*/, crawler.crawl()];
+            case 2:
+                _a.sent();
+                _a.label = 3;
+            case 3:
+                ind++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); })();
