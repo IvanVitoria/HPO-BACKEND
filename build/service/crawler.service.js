@@ -39,18 +39,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Crawler = void 0;
 var puppeteer = require("puppeteer");
 var Crawler = /** @class */ (function () {
-    function Crawler(pageNumber) {
-        this.pageNumber = pageNumber;
-        this.HPO_URL = "http://www.registresolicitants.cat/registre/noticias/03_noticias.jsp?numpagactual=" + this.pageNumber;
+    function Crawler( /*public pageNumber: number*/) {
     }
     ;
-    Crawler.prototype.crawl = function () {
+    Crawler.prototype.crawlResultsPage = function (pageNumber) {
         return __awaiter(this, void 0, void 0, function () {
-            var browser, page, resultsSelector, links, error_1;
+            var HPO_URL, links, browser, page, resultsSelector, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.info("Fetching URL: " + this.HPO_URL);
+                        HPO_URL = "http://www.registresolicitants.cat/registre/noticias/03_noticias.jsp?numpagactual=" + pageNumber;
+                        console.info("Fetching URL: " + HPO_URL);
+                        links = [];
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, 8, 9]);
@@ -60,20 +60,18 @@ var Crawler = /** @class */ (function () {
                         return [4 /*yield*/, browser.newPage()];
                     case 3:
                         page = _a.sent();
-                        return [4 /*yield*/, page.goto(this.HPO_URL)];
+                        return [4 /*yield*/, page.goto(HPO_URL)];
                     case 4:
                         _a.sent();
                         resultsSelector = '.notdcha a';
                         return [4 /*yield*/, page.evaluate(function (resultsSelector) {
                                 var anchors = Array.from(document.querySelectorAll(resultsSelector));
                                 return anchors.map(function (anchor) {
-                                    //const title = anchor.textContent.split('|')[0].trim();
                                     return "" + anchor.href;
                                 });
                             }, resultsSelector)];
                     case 5:
                         links = _a.sent();
-                        console.log(links.join('\n'));
                         return [4 /*yield*/, browser.close()];
                     case 6:
                         _a.sent();
@@ -83,9 +81,9 @@ var Crawler = /** @class */ (function () {
                         console.error(error_1);
                         return [3 /*break*/, 9];
                     case 8:
-                        console.info("Finished to crawl URL: " + this.HPO_URL);
+                        console.info("Finished to crawl URL: " + HPO_URL);
                         return [7 /*endfinally*/];
-                    case 9: return [2 /*return*/];
+                    case 9: return [2 /*return*/, links];
                 }
             });
         });

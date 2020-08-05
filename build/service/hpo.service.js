@@ -41,28 +41,56 @@ var crawler_service_1 = require("./crawler.service");
 var HPO = /** @class */ (function () {
     function HPO() {
     }
+    ;
+    HPO.prototype.startCrawling = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var ind, crawler, links, ids;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        ind = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(ind < 2)) return [3 /*break*/, 4];
+                        console.info("\n>>>>> Starting to Crawl page " + ind + " \n");
+                        crawler = new crawler_service_1.Crawler();
+                        return [4 /*yield*/, crawler.crawlResultsPage(ind)];
+                    case 2:
+                        links = _a.sent();
+                        console.debug(links.join('\n'));
+                        if (links.length > 0) {
+                            ids = this.extractAnnouncementIds(links);
+                        }
+                        console.info("\n<<<<< Finished to Crawl page " + ind + " \n");
+                        _a.label = 3;
+                    case 3:
+                        ind++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Extracts each 'idNoticia' from the URL of the links.
+     *
+     * Example of URL: http://www.registresolicitants.cat/registre/noticias/03_noticias_detalle.jsp?idNoticia=3804
+     *
+     * @param links
+     */
+    HPO.prototype.extractAnnouncementIds = function (links) {
+        return links.map(function (element) {
+            return Number(element.split('=')[1]);
+        });
+    };
     return HPO;
 }());
 exports.HPO = HPO;
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ind, crawler;
+    var hpo;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                ind = 0;
-                _a.label = 1;
-            case 1:
-                if (!(ind < 2)) return [3 /*break*/, 4];
-                console.info(">>>>> Starting to Crawl page " + ind);
-                crawler = new crawler_service_1.Crawler(ind);
-                return [4 /*yield*/, crawler.crawl()];
-            case 2:
-                _a.sent();
-                _a.label = 3;
-            case 3:
-                ind++;
-                return [3 /*break*/, 1];
-            case 4: return [2 /*return*/];
-        }
+        hpo = new HPO();
+        hpo.startCrawling();
+        return [2 /*return*/];
     });
 }); })();
