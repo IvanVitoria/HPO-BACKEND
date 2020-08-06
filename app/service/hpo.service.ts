@@ -9,7 +9,7 @@ export class HPO {
 
         for(let ind = 0; ind<2; ind++) {
 
-            console.info(`\n>>>>> Starting to Crawl page ${ind} \n`);
+            console.info(`\n>>>>> Starting to Crawl restuls page ${ind} \n`);
     
             const crawler: Crawler = new Crawler();
             let links = await crawler.crawlResultsPage(ind);
@@ -19,6 +19,11 @@ export class HPO {
             if(links.length > 0) {
                 let ids = this.extractAnnouncementIds(links);
                 
+                ids.forEach(async (id) => {
+                    console.info(`\n>>>>> Starting to Crawl announcment page ID = ${id} \n`);
+                    await crawler.crawlAnnouncementPage(id);
+
+                });
 
             }
 
@@ -31,6 +36,8 @@ export class HPO {
         }
 
     }
+
+    
     
     /**
      * Extracts each 'idNoticia' from the URL of the links. 

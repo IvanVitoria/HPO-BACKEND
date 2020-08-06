@@ -44,24 +44,50 @@ var HPO = /** @class */ (function () {
     ;
     HPO.prototype.startCrawling = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var ind, crawler, links, ids;
+            var _loop_1, this_1, ind;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _loop_1 = function (ind) {
+                            var crawler, links, ids;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        console.info("\n>>>>> Starting to Crawl restuls page " + ind + " \n");
+                                        crawler = new crawler_service_1.Crawler();
+                                        return [4 /*yield*/, crawler.crawlResultsPage(ind)];
+                                    case 1:
+                                        links = _a.sent();
+                                        console.debug(links.join('\n'));
+                                        if (links.length > 0) {
+                                            ids = this_1.extractAnnouncementIds(links);
+                                            ids.forEach(function (id) { return __awaiter(_this, void 0, void 0, function () {
+                                                return __generator(this, function (_a) {
+                                                    switch (_a.label) {
+                                                        case 0:
+                                                            console.info("\n>>>>> Starting to Crawl announcment page ID = " + id + " \n");
+                                                            return [4 /*yield*/, crawler.crawlAnnouncementPage(id)];
+                                                        case 1:
+                                                            _a.sent();
+                                                            return [2 /*return*/];
+                                                    }
+                                                });
+                                            }); });
+                                        }
+                                        console.info("\n<<<<< Finished to Crawl page " + ind + " \n");
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
+                        this_1 = this;
                         ind = 0;
                         _a.label = 1;
                     case 1:
                         if (!(ind < 2)) return [3 /*break*/, 4];
-                        console.info("\n>>>>> Starting to Crawl page " + ind + " \n");
-                        crawler = new crawler_service_1.Crawler();
-                        return [4 /*yield*/, crawler.crawlResultsPage(ind)];
+                        return [5 /*yield**/, _loop_1(ind)];
                     case 2:
-                        links = _a.sent();
-                        console.debug(links.join('\n'));
-                        if (links.length > 0) {
-                            ids = this.extractAnnouncementIds(links);
-                        }
-                        console.info("\n<<<<< Finished to Crawl page " + ind + " \n");
+                        _a.sent();
                         _a.label = 3;
                     case 3:
                         ind++;

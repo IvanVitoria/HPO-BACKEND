@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Crawler = void 0;
 var puppeteer = require("puppeteer");
 var Crawler = /** @class */ (function () {
-    function Crawler( /*public pageNumber: number*/) {
+    function Crawler() {
     }
     ;
     Crawler.prototype.crawlResultsPage = function (pageNumber) {
@@ -84,6 +84,69 @@ var Crawler = /** @class */ (function () {
                         console.info("Finished to crawl URL: " + HPO_URL);
                         return [7 /*endfinally*/];
                     case 9: return [2 /*return*/, links];
+                }
+            });
+        });
+    };
+    Crawler.prototype.crawlAnnouncementPage = function (announcementId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var HPO_URL, browser, page, container, content, dateField, descriptionField, linkField, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        HPO_URL = "http://www.registresolicitants.cat/registre/noticias/03_noticias_detalle.jsp?idNoticia=" + announcementId;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 7, 8, 9]);
+                        return [4 /*yield*/, puppeteer.launch()];
+                    case 2:
+                        browser = _a.sent();
+                        return [4 /*yield*/, browser.newPage()];
+                    case 3:
+                        page = _a.sent();
+                        return [4 /*yield*/, page.goto(HPO_URL)];
+                    case 4:
+                        _a.sent();
+                        container = '.ContenidoGral div';
+                        return [4 /*yield*/, page.evaluate(function (container) {
+                                var divs = Array.from(document.querySelectorAll(container));
+                                var result = [];
+                                // date
+                                result.push(divs[0].innerText.trim());
+                                // description
+                                var strongTag = divs[1].getElementsByTagName('strong')[0];
+                                result.push(strongTag.innerText.trim());
+                                // link
+                                var tagP = divs[1].getElementsByTagName('p')[0];
+                                var tagA = tagP.getElementsByTagName('a')[0];
+                                result.push(tagA.href);
+                                return result;
+                                /*return divs.map(div => {
+                                  return div.innerHTML;
+                                });*/
+                            }, container)];
+                    case 5:
+                        content = _a.sent();
+                        dateField = content[0];
+                        descriptionField = content[1];
+                        linkField = content[2];
+                        console.info(dateField + " - " + descriptionField + " - " + linkField);
+                        return [4 /*yield*/, browser.close()];
+                    case 6:
+                        _a.sent();
+                        return [2 /*return*/, {
+                                id: announcementId,
+                                url: HPO_URL,
+                                date: dateField
+                            }];
+                    case 7:
+                        error_2 = _a.sent();
+                        console.error(error_2);
+                        return [3 /*break*/, 9];
+                    case 8:
+                        console.info("Finished to crawl URL: " + HPO_URL);
+                        return [7 /*endfinally*/];
+                    case 9: return [2 /*return*/];
                 }
             });
         });
