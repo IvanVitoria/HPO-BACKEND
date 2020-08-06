@@ -63,13 +63,24 @@ var HPO = /** @class */ (function () {
                                         if (links.length > 0) {
                                             ids = this_1.extractAnnouncementIds(links);
                                             ids.forEach(function (id) { return __awaiter(_this, void 0, void 0, function () {
+                                                var announcementData;
                                                 return __generator(this, function (_a) {
                                                     switch (_a.label) {
                                                         case 0:
                                                             console.info("\n>>>>> Starting to Crawl announcment page ID = " + id + " \n");
                                                             return [4 /*yield*/, crawler.crawlAnnouncementPage(id)];
                                                         case 1:
-                                                            _a.sent();
+                                                            announcementData = _a.sent();
+                                                            /*                    const announcement: Annoucement = new Annoucement(
+                                                                                    announcementData.id,
+                                                                                    announcementData.url,
+                                                                                    announcementData.date,
+                                                                                    announcementData.description,
+                                                                                    announcementData.document_url
+                                                                                    );
+                                                                                    */
+                                                            console.log(JSON.stringify(announcementData));
+                                                            console.info("\n>>>>> Finished to Crawl announcment page ID = " + id + " \n");
                                                             return [2 /*return*/];
                                                     }
                                                 });

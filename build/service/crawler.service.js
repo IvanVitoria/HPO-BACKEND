@@ -90,14 +90,14 @@ var Crawler = /** @class */ (function () {
     };
     Crawler.prototype.crawlAnnouncementPage = function (announcementId) {
         return __awaiter(this, void 0, void 0, function () {
-            var HPO_URL, browser, page, container, content, dateField, descriptionField, linkField, error_2;
+            var HPO_URL, browser, page, container, content, dateField, descriptionField, documentLink, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         HPO_URL = "http://www.registresolicitants.cat/registre/noticias/03_noticias_detalle.jsp?idNoticia=" + announcementId;
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 7, 8, 9]);
+                        _a.trys.push([1, 7, , 8]);
                         return [4 /*yield*/, puppeteer.launch()];
                     case 2:
                         browser = _a.sent();
@@ -121,32 +121,28 @@ var Crawler = /** @class */ (function () {
                                 var tagA = tagP.getElementsByTagName('a')[0];
                                 result.push(tagA.href);
                                 return result;
-                                /*return divs.map(div => {
-                                  return div.innerHTML;
-                                });*/
                             }, container)];
                     case 5:
                         content = _a.sent();
                         dateField = content[0];
                         descriptionField = content[1];
-                        linkField = content[2];
-                        console.info(dateField + " - " + descriptionField + " - " + linkField);
+                        documentLink = content[2];
+                        console.info(dateField + " - " + descriptionField + " - " + documentLink);
                         return [4 /*yield*/, browser.close()];
                     case 6:
                         _a.sent();
                         return [2 /*return*/, {
                                 id: announcementId,
                                 url: HPO_URL,
-                                date: dateField
+                                date: dateField,
+                                description: descriptionField,
+                                document_url: documentLink
                             }];
                     case 7:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 9];
-                    case 8:
-                        console.info("Finished to crawl URL: " + HPO_URL);
-                        return [7 /*endfinally*/];
-                    case 9: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         });

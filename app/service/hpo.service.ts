@@ -21,18 +21,22 @@ export class HPO {
                 
                 ids.forEach(async (id) => {
                     console.info(`\n>>>>> Starting to Crawl announcment page ID = ${id} \n`);
-                    await crawler.crawlAnnouncementPage(id);
-
+                    const announcementData = await crawler.crawlAnnouncementPage(id);
+/*                    const announcement: Annoucement = new Annoucement(
+                        announcementData.id, 
+                        announcementData.url, 
+                        announcementData.date, 
+                        announcementData.description, 
+                        announcementData.document_url
+                        ); 
+                        */
+                        
+                    console.log(JSON.stringify(announcementData));                           
+                    console.info(`\n>>>>> Finished to Crawl announcment page ID = ${id} \n`);
                 });
-
             }
 
-            
             console.info(`\n<<<<< Finished to Crawl page ${ind} \n`);
-
-
-            //const announcement: Annoucement = new Annoucement();
-
         }
 
     }

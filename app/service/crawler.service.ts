@@ -70,7 +70,7 @@ export class Crawler {
       const descriptionField = content[1];
       const documentLink = content[2];
 
-      console.info(`${dateField} - ${descriptionField} - ${documentLink}`);
+      //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
  
       await browser.close();
 
@@ -82,7 +82,7 @@ export class Crawler {
         document_url: documentLink
       }
     } catch(error) {
-    console.error(error);
+      console.error(error);
     } 
   }
 
