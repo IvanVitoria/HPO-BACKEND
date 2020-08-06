@@ -36,27 +36,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Crawler = void 0;
 var puppeteer = require("puppeteer");
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var browser, page;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, puppeteer.launch()];
-            case 1:
-                browser = _a.sent();
-                return [4 /*yield*/, browser.newPage()];
-            case 2:
-                page = _a.sent();
-                return [4 /*yield*/, page.goto('https://example.com')];
-            case 3:
-                _a.sent();
-                return [4 /*yield*/, page.screenshot({ path: 'example.png' })];
-            case 4:
-                _a.sent();
-                return [4 /*yield*/, browser.close()];
-            case 5:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); })();
+var announcement_model_1 = require("./model/announcement.model");
+var Crawler = /** @class */ (function () {
+    function Crawler(pageNumber) {
+        this.pageNumber = pageNumber;
+        this.HPO_URL = "http://www.registresolicitants.cat/registre/noticias/03_noticias.jsp?numpagactual=" + this.pageNumber;
+    }
+    ;
+    Crawler.prototype.crawl = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var announcement, browser, page;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.info("Fetching URL: " + this.HPO_URL);
+                        announcement = new announcement_model_1.Annoucement();
+                        return [4 /*yield*/, puppeteer.launch()];
+                    case 1:
+                        browser = _a.sent();
+                        return [4 /*yield*/, browser.newPage()];
+                    case 2:
+                        page = _a.sent();
+                        return [4 /*yield*/, page.goto(this.HPO_URL)];
+                    case 3:
+                        _a.sent();
+                        return [4 /*yield*/, page.screenshot({ path: 'crawler.png' })];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, browser.close()];
+                    case 5:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return Crawler;
+}());
+exports.Crawler = Crawler;
+(function () {
+    var crawler = new Crawler(2);
+    crawler.crawl();
+})();
