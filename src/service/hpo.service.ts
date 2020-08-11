@@ -1,5 +1,5 @@
 import { Crawler } from "./crawler.service";
-import { Annoucement } from "../model/announcement.model";
+
 
 export class HPO {
 
