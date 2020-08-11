@@ -1,14 +1,16 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import express = require('express');
+import {HPO} from "./service/hpo.service";
 import {Announcement} from "./entity/Announcement";
 import {getRepository} from "typeorm";
 
 
 
+
 createConnection().then(async connection => {
 
-    console.log("Inserting a new Annoucement into the database...");
+    /*console.log("Inserting a new Annoucement into the database...");
     const announcement = new Announcement();
     announcement.externalId = '123456';
     announcement.description = 'Description';
@@ -26,7 +28,7 @@ createConnection().then(async connection => {
     console.log("Loading Announcement from the database...");
     //const annoucements = await connection.manager.find(annoucement);
     const annoucementFromDB = await annoucementRepository.findOne(announcement.id);
-    console.log("Loaded annoucement: ", annoucementFromDB);
+    console.log("Loaded annoucement: ", annoucementFromDB);*/
     
     const app: express.Application = express();
     app.get('/', function (req, res) {
@@ -35,5 +37,11 @@ createConnection().then(async connection => {
     app.listen(3000, function () {
       console.log('Example app listening on port 3000!');
     });    
+
+    console.log('Start crawling');
+    const hpo : HPO = new HPO();
+    await hpo.startCrawling();
+
+
 
 }).catch(error => console.log(error));

@@ -38,6 +38,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HPO = void 0;
 var crawler_service_1 = require("./crawler.service");
+var Announcement_1 = require("../entity/Announcement");
+var typeorm_1 = require("typeorm");
 var HPO = /** @class */ (function () {
     function HPO() {
     }
@@ -71,15 +73,8 @@ var HPO = /** @class */ (function () {
                                                             return [4 /*yield*/, crawler.crawlAnnouncementPage(id)];
                                                         case 1:
                                                             announcementData = _a.sent();
-                                                            /*                    const announcement: Annoucement = new Annoucement(
-                                                                                    announcementData.id,
-                                                                                    announcementData.url,
-                                                                                    announcementData.date,
-                                                                                    announcementData.description,
-                                                                                    announcementData.document_url
-                                                                                    );
-                                                                                    */
-                                                            console.log(JSON.stringify(announcementData));
+                                                            console.debug('Crawled data: ', JSON.stringify(announcementData));
+                                                            this.saveAnnouncement(announcementData);
                                                             console.info("\n>>>>> Finished to Crawl announcment page ID = " + id + " \n");
                                                             return [2 /*return*/];
                                                     }
@@ -107,6 +102,24 @@ var HPO = /** @class */ (function () {
                 }
             });
         });
+    };
+    HPO.prototype.saveAnnouncement = function (announcementData) {
+        var announcement = new Announcement_1.Announcement();
+        announcement.externalId = announcementData.id;
+        announcement.description = announcementData.description;
+        announcement.documentUrl = announcementData.document_url;
+        announcement.url = announcementData.url;
+        announcement.publishedAt = this.datetify(announcementData.date);
+        var now = new Date();
+        announcement.createdAt = now;
+        announcement.updatedAt = now;
+        var annoucementRepository = typeorm_1.getRepository(Announcement_1.Announcement);
+        annoucementRepository.save(announcement);
+        console.log("Saved a new Announcement with id: " + announcement.id);
+    };
+    HPO.prototype.datetify = function (field) {
+        var dateFields = field.trim().split('/');
+        return new Date(Number(dateFields[2]), (Number(dateFields[1]) - 1), Number(dateFields[0]));
     };
     /**
      * Extracts each 'idNoticia' from the URL of the links.

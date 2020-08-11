@@ -63,9 +63,6 @@ export class Crawler {
         return result;
       }, container);
       
-      //const dateFields = content[0].trim().split('/');
-      //const dateField = new Date(Number(dateFields[2]), (Number(dateFields[1]) - 1), Number(dateFields[0]));
-
       const dateField = content[0];
       const descriptionField = content[1];
       const documentLink = content[2];

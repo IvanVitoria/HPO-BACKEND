@@ -39,33 +39,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 var typeorm_1 = require("typeorm");
 var express = require("express");
-var Announcement_1 = require("./entity/Announcement");
-var typeorm_2 = require("typeorm");
+var hpo_service_1 = require("./service/hpo.service");
 typeorm_1.createConnection().then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-    var announcement, annoucementRepository, annoucementFromDB, app;
+    var app, hpo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("Inserting a new Annoucement into the database...");
-                announcement = new Announcement_1.Announcement();
-                announcement.externalId = '123456';
-                announcement.description = 'Description';
-                announcement.documentUrl = 'https://announcement.com/123456/document.pdf';
-                announcement.url = 'https://announcement.com/123456';
-                announcement.publishedAt = new Date();
-                announcement.createdAt = new Date();
-                announcement.updatedAt = new Date();
-                annoucementRepository = typeorm_2.getRepository(Announcement_1.Announcement);
-                return [4 /*yield*/, annoucementRepository.save(announcement)];
-            case 1:
-                _a.sent();
-                //await connection.manager.save(annoucement);
-                console.log("Saved a new Announcement with id: " + announcement.id);
-                console.log("Loading Announcement from the database...");
-                return [4 /*yield*/, annoucementRepository.findOne(announcement.id)];
-            case 2:
-                annoucementFromDB = _a.sent();
-                console.log("Loaded annoucement: ", annoucementFromDB);
                 app = express();
                 app.get('/', function (req, res) {
                     res.send('Hello World!');
@@ -73,6 +52,11 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(void 
                 app.listen(3000, function () {
                     console.log('Example app listening on port 3000!');
                 });
+                console.log('Start crawling');
+                hpo = new hpo_service_1.HPO();
+                return [4 /*yield*/, hpo.startCrawling()];
+            case 1:
+                _a.sent();
                 return [2 /*return*/];
         }
     });
