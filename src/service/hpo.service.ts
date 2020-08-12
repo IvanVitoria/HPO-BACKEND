@@ -43,10 +43,10 @@ export class HPO {
         announcement.description = announcementData.description;
         announcement.documentUrl = announcementData.document_url;
         announcement.url = announcementData.url; 
-        announcement.publishedAt = this.datetify(announcementData.date);
-        const now : Date = new Date();
+        announcement.publishedAt = this.datify(announcementData.date);
+        /*const now : Date = new Date();
         announcement.createdAt = now;
-        announcement.updatedAt = now;
+        announcement.updatedAt = now;*/
 
         const annoucementRepository = getRepository(Announcement);
         annoucementRepository.save(announcement);
@@ -54,7 +54,7 @@ export class HPO {
     }
 
     
-    private datetify(field : string) : Date {
+    private datify(field : string) : Date {
         const dateFields = field.trim().split('/');
         return new Date(Number(dateFields[2]), (Number(dateFields[1]) - 1), Number(dateFields[0]));
     }
@@ -74,9 +74,3 @@ export class HPO {
     }
 
 }
-
- (async () => {
-
-    const hpo: HPO = new HPO();
-    hpo.startCrawling();
-})();

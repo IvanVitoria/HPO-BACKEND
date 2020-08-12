@@ -1,29 +1,51 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    Unique,
+    CreateDateColumn,
+    UpdateDateColumn,
+    BeforeInsert,
+    BeforeUpdate
+  } from "typeorm";
 
 @Entity()
+@Unique(["externalId"])
 export class Announcement {
     
     @PrimaryGeneratedColumn()
-    id?: number;
+    id!: number;
     
     @Column()
-    externalId?: string;
+    externalId!: string;
     
     @Column()
-    url?: string;
+    url!: string;
     
     @Column()
-    publishedAt?: Date;
+    publishedAt!: Date;
     
     @Column()
-    description?: string;
+    description!: string;
     
     @Column()
-    documentUrl?: string;
+    documentUrl!: string;
     
     @Column()
-    createdAt?: Date;
+    @CreateDateColumn()
+    createdAt!: Date;
     
     @Column()
-    updatedAt?: Date;
+    @UpdateDateColumn()
+    updatedAt!: Date;
+
+    @BeforeInsert()
+    beforeInsert() {
+        this.createdAt = this.updatedAt = new Date();
+    }
+
+    @BeforeUpdate()
+    beforeUpdate() {
+        this.updatedAt = new Date();
+    }
 }

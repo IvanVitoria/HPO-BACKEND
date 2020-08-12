@@ -109,15 +109,15 @@ var HPO = /** @class */ (function () {
         announcement.description = announcementData.description;
         announcement.documentUrl = announcementData.document_url;
         announcement.url = announcementData.url;
-        announcement.publishedAt = this.datetify(announcementData.date);
-        var now = new Date();
+        announcement.publishedAt = this.datify(announcementData.date);
+        /*const now : Date = new Date();
         announcement.createdAt = now;
-        announcement.updatedAt = now;
+        announcement.updatedAt = now;*/
         var annoucementRepository = typeorm_1.getRepository(Announcement_1.Announcement);
         annoucementRepository.save(announcement);
         console.log("Saved a new Announcement with id: " + announcement.id);
     };
-    HPO.prototype.datetify = function (field) {
+    HPO.prototype.datify = function (field) {
         var dateFields = field.trim().split('/');
         return new Date(Number(dateFields[2]), (Number(dateFields[1]) - 1), Number(dateFields[0]));
     };
@@ -136,11 +136,3 @@ var HPO = /** @class */ (function () {
     return HPO;
 }());
 exports.HPO = HPO;
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var hpo;
-    return __generator(this, function (_a) {
-        hpo = new HPO();
-        hpo.startCrawling();
-        return [2 /*return*/];
-    });
-}); })();
