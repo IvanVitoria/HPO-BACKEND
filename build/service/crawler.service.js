@@ -127,9 +127,10 @@ var Crawler = /** @class */ (function () {
                         dateField = content[0];
                         descriptionField = content[1];
                         documentLink = content[2];
-                        console.info(dateField + " - " + descriptionField + " - " + documentLink);
+                        //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
                         return [4 /*yield*/, browser.close()];
                     case 6:
+                        //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
                         _a.sent();
                         return [2 /*return*/, {
                                 id: announcementId,
