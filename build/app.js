@@ -62,29 +62,17 @@ require("reflect-metadata");
 var typeorm_1 = require("typeorm");
 var express = require("express");
 var bodyParser = __importStar(require("body-parser"));
-var hpo_service_1 = require("./service/hpo.service");
 var route_1 = __importDefault(require("./api/route"));
 var PORT = 3000;
 typeorm_1.createConnection().then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-    var app, hpo;
+    var app;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                app = express();
-                app.use(bodyParser.json());
-                app.use("/", route_1.default);
-                app.get('/', function (req, res) {
-                    res.send('Hello World!');
-                });
-                app.listen(PORT, function () {
-                    console.log('Example app listening on port 3000!');
-                });
-                console.log('Start crawling');
-                hpo = new hpo_service_1.HPO();
-                return [4 /*yield*/, hpo.startCrawling()];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
+        app = express();
+        app.use(bodyParser.json());
+        app.use("/", route_1.default);
+        app.listen(PORT, function () {
+            console.log('Example app listening on port 3000!');
+        });
+        return [2 /*return*/];
     });
 }); }).catch(function (error) { return console.log(error); });

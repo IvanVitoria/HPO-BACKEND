@@ -42,80 +42,118 @@ var Announcement_1 = require("../entity/Announcement");
 var typeorm_1 = require("typeorm");
 var HPO = /** @class */ (function () {
     function HPO() {
+        this.annoucementRepository = typeorm_1.getRepository(Announcement_1.Announcement);
     }
     ;
     HPO.prototype.startCrawling = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _loop_1, this_1, ind;
+            var initialPage;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        initialPage = 1;
+                        console.info("Crawler starts");
+                        return [4 /*yield*/, this.crawlPage(initialPage)
+                                .then(function () { return console.info("Crawler finishes"); })
+                                .catch(function (e) { return console.error(e); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    HPO.prototype.crawlPage = function (pageNumber) {
+        return __awaiter(this, void 0, void 0, function () {
+            var crawledAnnouncements, crawler, links, ids, _loop_1, this_1, index;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _loop_1 = function (ind) {
-                            var crawler, links, ids;
+                        crawledAnnouncements = 0;
+                        console.info("\n>>>>> Starting to Crawl restuls page " + pageNumber + " \n");
+                        crawler = new crawler_service_1.Crawler();
+                        return [4 /*yield*/, crawler.crawlResultsPage(pageNumber)];
+                    case 1:
+                        links = _a.sent();
+                        console.debug(links.join('\n'));
+                        if (!(links.length > 0)) return [3 /*break*/, 5];
+                        ids = this.extractAnnouncementIds(links);
+                        _loop_1 = function (index) {
+                            var id, existingAnnouncement;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        console.info("\n>>>>> Starting to Crawl restuls page " + ind + " \n");
-                                        crawler = new crawler_service_1.Crawler();
-                                        return [4 /*yield*/, crawler.crawlResultsPage(ind)];
+                                        id = ids[index];
+                                        return [4 /*yield*/, this_1.annoucementRepository.findOne({ where: { externalId: id } })];
                                     case 1:
-                                        links = _a.sent();
-                                        console.debug(links.join('\n'));
-                                        if (links.length > 0) {
-                                            ids = this_1.extractAnnouncementIds(links);
-                                            ids.forEach(function (id) { return __awaiter(_this, void 0, void 0, function () {
-                                                var announcementData;
-                                                return __generator(this, function (_a) {
-                                                    switch (_a.label) {
-                                                        case 0:
-                                                            console.info("\n>>>>> Starting to Crawl announcment page ID = " + id + " \n");
-                                                            return [4 /*yield*/, crawler.crawlAnnouncementPage(id)];
-                                                        case 1:
-                                                            announcementData = _a.sent();
-                                                            console.debug('Crawled data: ', JSON.stringify(announcementData));
-                                                            this.saveAnnouncement(announcementData);
-                                                            console.info("\n>>>>> Finished to Crawl announcment page ID = " + id + " \n");
-                                                            return [2 /*return*/];
-                                                    }
-                                                });
-                                            }); });
-                                        }
-                                        console.info("\n<<<<< Finished to Crawl page " + ind + " \n");
-                                        return [2 /*return*/];
+                                        existingAnnouncement = _a.sent();
+                                        if (!(existingAnnouncement === null || existingAnnouncement === void 0 ? void 0 : existingAnnouncement.externalId)) return [3 /*break*/, 2];
+                                        console.info("\nSkipping announcment ID = " + id + " because already exists \n");
+                                        return [3 /*break*/, 4];
+                                    case 2:
+                                        console.info("\n>>>>> Starting to Crawl announcment page ID = " + id + " \n");
+                                        return [4 /*yield*/, crawler.crawlAnnouncementPage(id)
+                                                .then(function (announcementData) {
+                                                if (announcementData) {
+                                                    console.debug('\nCrawled data: ', JSON.stringify(announcementData) + "\n");
+                                                    _this.saveAnnouncement(announcementData);
+                                                }
+                                                else {
+                                                    console.log("ERROR: Unable to extract data from announcement ID = " + id);
+                                                }
+                                            })];
+                                    case 3:
+                                        _a.sent();
+                                        console.info("\n>>>>> Finished to Crawl announcment page ID = " + id + " \n");
+                                        crawledAnnouncements++;
+                                        _a.label = 4;
+                                    case 4: return [2 /*return*/];
                                 }
                             });
                         };
                         this_1 = this;
-                        ind = 0;
-                        _a.label = 1;
-                    case 1:
-                        if (!(ind < 2)) return [3 /*break*/, 4];
-                        return [5 /*yield**/, _loop_1(ind)];
+                        index = 0;
+                        _a.label = 2;
                     case 2:
-                        _a.sent();
-                        _a.label = 3;
+                        if (!(index < links.length)) return [3 /*break*/, 5];
+                        return [5 /*yield**/, _loop_1(index)];
                     case 3:
-                        ind++;
-                        return [3 /*break*/, 1];
-                    case 4: return [2 /*return*/];
+                        _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        index++;
+                        return [3 /*break*/, 2];
+                    case 5:
+                        console.info("\n<<<<< Finished to Crawl page " + pageNumber + " with " + crawledAnnouncements + " new announcements \n");
+                        if (!(crawledAnnouncements > 0)) return [3 /*break*/, 7];
+                        pageNumber++;
+                        return [4 /*yield*/, this.crawlPage(pageNumber)
+                                .catch(function (e) { return console.error(e); })];
+                    case 6:
+                        _a.sent();
+                        _a.label = 7;
+                    case 7: return [2 /*return*/];
                 }
             });
         });
     };
     HPO.prototype.saveAnnouncement = function (announcementData) {
-        var announcement = new Announcement_1.Announcement();
-        announcement.externalId = announcementData.id;
-        announcement.description = announcementData.description;
-        announcement.documentUrl = announcementData.document_url;
-        announcement.url = announcementData.url;
-        announcement.publishedAt = this.datify(announcementData.date);
-        /*const now : Date = new Date();
-        announcement.createdAt = now;
-        announcement.updatedAt = now;*/
-        var annoucementRepository = typeorm_1.getRepository(Announcement_1.Announcement);
-        annoucementRepository.save(announcement);
-        console.log("Saved a new Announcement with id: " + announcement.id);
+        return __awaiter(this, void 0, void 0, function () {
+            var announcement;
+            return __generator(this, function (_a) {
+                announcement = new Announcement_1.Announcement();
+                announcement.externalId = announcementData.id;
+                announcement.description = announcementData.description;
+                announcement.documentUrl = announcementData.document_url;
+                announcement.url = announcementData.url;
+                announcement.publishedAt = this.datify(announcementData.date);
+                this.annoucementRepository.save(announcement)
+                    .then(function (r) { return console.log("Saved a new Announcement with id: " + r.id); })
+                    .catch(function (e) { return console.error(e); });
+                return [2 /*return*/];
+            });
+        });
     };
     HPO.prototype.datify = function (field) {
         var dateFields = field.trim().split('/');

@@ -56,18 +56,22 @@ export class Crawler {
         result.push(strongTag.innerText.trim()); 
         
         // link
-        const tagP = divs[1].getElementsByTagName('p')[0];
-        const tagA = tagP.getElementsByTagName('a')[0];
-        result.push(tagA.href); 
-
+        const pList = divs[1].getElementsByTagName('p');
+        const tagAList = (pList && pList.length > 0) ? pList[0].getElementsByTagName('a') : divs[1].getElementsByTagName('a');
+        
+        if(tagAList && tagAList.length > 0) { 
+          result.push(tagAList[0].href);
+        } else {
+          console.log(`WARN: document link not found for announcement ID = ${announcementId}`);
+        }
+        
+        
         return result;
       }, container);
       
       const dateField = content[0];
       const descriptionField = content[1];
-      const documentLink = content[2];
-
-      //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
+      const documentLink = (content.length > 2) ? content[2] : null ;
  
       await browser.close();
 

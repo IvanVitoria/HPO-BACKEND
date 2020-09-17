@@ -13,18 +13,14 @@ const PORT = 3000;
 createConnection().then(async connection => {
     const app: express.Application = express();
     app.use(bodyParser.json());
-
     app.use("/", routes);
 
-    app.get('/', function (req, res) {
-      res.send('Hello World!');
-    });
     app.listen(PORT, function () {
       console.log('Example app listening on port 3000!');
     });    
 
-    console.log('Start crawling');
+    /*console.log('Start crawling');
     const hpo : HPO = new HPO();
-    await hpo.startCrawling();
+    await hpo.startCrawling();*/
 
 }).catch(error => console.log(error));

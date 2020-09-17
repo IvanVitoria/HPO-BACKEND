@@ -117,20 +117,23 @@ var Crawler = /** @class */ (function () {
                                 var strongTag = divs[1].getElementsByTagName('strong')[0];
                                 result.push(strongTag.innerText.trim());
                                 // link
-                                var tagP = divs[1].getElementsByTagName('p')[0];
-                                var tagA = tagP.getElementsByTagName('a')[0];
-                                result.push(tagA.href);
+                                var pList = divs[1].getElementsByTagName('p');
+                                var tagAList = (pList && pList.length > 0) ? pList[0].getElementsByTagName('a') : divs[1].getElementsByTagName('a');
+                                if (tagAList && tagAList.length > 0) {
+                                    result.push(tagAList[0].href);
+                                }
+                                else {
+                                    console.log("WARN: document link not found for announcement ID = " + announcementId);
+                                }
                                 return result;
                             }, container)];
                     case 5:
                         content = _a.sent();
                         dateField = content[0];
                         descriptionField = content[1];
-                        documentLink = content[2];
-                        //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
+                        documentLink = (content.length > 2) ? content[2] : null;
                         return [4 /*yield*/, browser.close()];
                     case 6:
-                        //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
                         _a.sent();
                         return [2 /*return*/, {
                                 id: announcementId,
