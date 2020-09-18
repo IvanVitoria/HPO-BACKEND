@@ -1,10 +1,10 @@
 import { Router } from "express";
-import AnnouncementController from "../controller/AnnouncementController";
+import { AnnouncementController}  from "../controller/AnnouncementController";
 
 
 const router = Router();
 
  //Get all announcements
- router.get("/", AnnouncementController.listAll);
+ router.get("/", AnnouncementController.findAll);
 
  export default router;
