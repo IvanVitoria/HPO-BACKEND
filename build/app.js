@@ -62,7 +62,9 @@ require("reflect-metadata");
 var typeorm_1 = require("typeorm");
 var express = require("express");
 var bodyParser = __importStar(require("body-parser"));
+var hpo_service_1 = require("./service/hpo.service");
 var route_1 = __importDefault(require("./api/route"));
+var node_cron_1 = require("node-cron");
 var PORT = 3000;
 typeorm_1.createConnection().then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
     var app;
@@ -71,8 +73,19 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(void 
         app.use(bodyParser.json());
         app.use("/", route_1.default);
         app.listen(PORT, function () {
-            console.log('Example app listening on port 3000!');
+            console.log("Server is up and listening on port " + PORT);
+            var task = node_cron_1.schedule('* * * * *', function () {
+                startCrawling();
+            });
+            startCrawling(); // frist time
         });
         return [2 /*return*/];
     });
 }); }).catch(function (error) { return console.log(error); });
+function startCrawling() {
+    console.log('Start crawling');
+    var hpo = new hpo_service_1.HPO();
+    hpo.startCrawling()
+        .then(function () { return console.log('End crawling'); })
+        .catch(function (e) { return console.error(e); });
+}

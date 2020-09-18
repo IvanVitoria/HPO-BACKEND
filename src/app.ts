@@ -4,6 +4,7 @@ import express = require('express');
 import * as bodyParser from "body-parser";
 import {HPO} from "./service/hpo.service";
 import routes from "./api/route";
+import {schedule} from "node-cron"
 
 
 
@@ -16,11 +17,27 @@ createConnection().then(async connection => {
     app.use("/", routes);
 
     app.listen(PORT, function () {
-      console.log('Example app listening on port 3000!');
+      console.log(`Server is up and listening on port ${PORT}`);
+
+      const task = schedule('0 19 * * *', () => { // every day at 19:00
+        startCrawling();
+      }, {
+        timezone: "Europe/Madrid"
+      });
+
+      startCrawling(); // frist time
     });    
 
-    /*console.log('Start crawling');
-    const hpo : HPO = new HPO();
-    await hpo.startCrawling();*/
+    
 
 }).catch(error => console.log(error));
+
+function startCrawling() {
+  console.log('Start crawling');
+  
+  const hpo : HPO = new HPO();
+  hpo.startCrawling()
+    .then(() => console.log('End crawling'))
+    .catch(e => console.error(e));
+
+}
