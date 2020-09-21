@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Brackets, getRepository, SelectQueryBuilder } from "typeorm";
+import { Brackets, getRepository, ObjectLiteral } from "typeorm";
 
 import { Announcement } from "../../entity/Announcement";
 
@@ -11,8 +11,6 @@ export class AnnouncementController {
     static findAll = async (req: Request, res: Response) => {
   
       const announcementRepository = getRepository(Announcement);
-      let announcements : Announcement[];
-
       let publishedAfter : Date; 
 
       if(req.query.published) {
@@ -37,9 +35,16 @@ export class AnnouncementController {
         const arrayCities : string[] = cities;
           builder = builder.andWhere(new Brackets(qb => {
             for(let ind = 0; ind < arrayCities.length; ind++) {
-              const city = arrayCities[ind].toLowerCase();
-              const whereString = "LOWER(announcement.description) LIKE :city";
-              const whereValue = { city: `%${city}%` };
+              const city = arrayCities[ind].trim().toLowerCase();
+              const cityKey = 'city' + ind;
+              const whereString = "LOWER(announcement.description) LIKE :city" + ind;              
+              var whereValue: ObjectLiteral = {
+                cityKey: `%${city}%`
+              }
+
+              whereValue[cityKey] = `%${city}%`;
+              //console.log(`[${cityKey}] = ${whereValue[cityKey]}`);
+
               if(ind == 0) {
                 qb = qb.where(whereString, whereValue);
               } else {
@@ -52,12 +57,15 @@ export class AnnouncementController {
       builder.orderBy("announcement.publishedAt", "DESC");
 
       console.log(`\n SQL: \n ${builder.getSql()} \n`);
-      //builder.printSql();
       
-      announcements = await builder.getMany();
-  
-
-       //Send the users object
-       res.send(announcements);
+      await builder.getMany()
+        .then(a => {
+          console.log(`Returning ${a.length} announcements`);
+          res.status(200).send(a);
+        })
+        .catch(e => {
+          console.error(e);
+          res.status(500).send();
+        });
    }
 }

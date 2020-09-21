@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {createConnection} from "typeorm";
 import express = require('express');
 import * as bodyParser from "body-parser";
-import {HPO} from "./service/hpo.service";
+import {HpoService} from "./service/HpoService";
 import routes from "./api/route";
 import {schedule} from "node-cron"
 
@@ -33,7 +33,7 @@ createConnection().then(async connection => {
 function startCrawling() {
   console.log('Start crawling');
   
-  const hpo : HPO = new HPO();
+  const hpo : HpoService = new HpoService();
   hpo.startCrawling()
     .then(() => console.log('End crawling'))
     .catch(e => console.error(e));

@@ -1,6 +1,6 @@
 import puppeteer = require('puppeteer');
 
-export class Crawler {
+export class HpoCarwler {
   
   constructor() {};
 

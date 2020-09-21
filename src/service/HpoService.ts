@@ -1,9 +1,9 @@
-import {Crawler} from "./crawler.service";
+import {HpoCarwler} from "./HpoCarwler";
 import {Announcement} from "../entity/Announcement";
 import {getRepository} from "typeorm";
 
 
-export class HPO {
+export class HpoService {
 
     private readonly annoucementRepository = getRepository(Announcement);
 
@@ -28,7 +28,7 @@ export class HPO {
 
         console.info(`\n>>>>> Starting to Crawl restuls page ${pageNumber} \n`);
     
-        const crawler: Crawler = new Crawler();
+        const crawler: HpoCarwler = new HpoCarwler();
         let links = await crawler.crawlResultsPage(pageNumber);
 
         console.debug(links.join('\n'));
