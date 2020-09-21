@@ -74,8 +74,10 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(void 
         app.use("/", route_1.default);
         app.listen(PORT, function () {
             console.log("Server is up and listening on port " + PORT);
-            var task = node_cron_1.schedule('* * * * *', function () {
+            var task = node_cron_1.schedule('0 19 * * *', function () {
                 startCrawling();
+            }, {
+                timezone: "Europe/Madrid"
             });
             startCrawling(); // frist time
         });

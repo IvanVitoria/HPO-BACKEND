@@ -7,9 +7,7 @@ import routes from "./api/route";
 import {schedule} from "node-cron"
 
 
-
 const PORT = 3000;
-
 
 createConnection().then(async connection => {
     const app: express.Application = express();
