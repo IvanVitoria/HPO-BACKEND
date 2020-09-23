@@ -1,47 +1,45 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import express = require('express');
-import {HPO} from "./service/hpo.service";
-import {Announcement} from "./entity/Announcement";
-import {getRepository} from "typeorm";
+import * as bodyParser from "body-parser";
+import {HpoService} from "./service/HpoService";
+import routes from "./api/route";
+import {schedule} from "node-cron"
+import { Logger } from "tslog";
+
+require('dotenv').config();
 
 
-
+const log: Logger = new Logger();
+const PORT = process.env.API_PORT;
 
 createConnection().then(async connection => {
-
-    /*console.log("Inserting a new Annoucement into the database...");
-    const announcement = new Announcement();
-    announcement.externalId = '123456';
-    announcement.description = 'Description';
-    announcement.documentUrl = 'https://announcement.com/123456/document.pdf';
-    announcement.url = 'https://announcement.com/123456'; 
-    announcement.publishedAt = new Date();
-    announcement.createdAt = new Date();
-    announcement.updatedAt = new Date();
-
-    const annoucementRepository = getRepository(Announcement);
-    await annoucementRepository.save(announcement);
-    //await connection.manager.save(annoucement);
-    console.log("Saved a new Announcement with id: " + announcement.id);
-
-    console.log("Loading Announcement from the database...");
-    //const annoucements = await connection.manager.find(annoucement);
-    const annoucementFromDB = await annoucementRepository.findOne(announcement.id);
-    console.log("Loaded annoucement: ", annoucementFromDB);*/
-    
     const app: express.Application = express();
-    app.get('/', function (req, res) {
-      res.send('Hello World!');
-    });
-    app.listen(3000, function () {
-      console.log('Example app listening on port 3000!');
+    app.use(bodyParser.json());
+    app.use("/", routes);
+
+    app.listen(PORT, function () {
+      log.info(`Server is up and listening on port ${PORT}`);
+
+      const task = schedule('0 19 * * *', () => { // every day at 19:00
+        startCrawling();
+      }, {
+        timezone: "Europe/Madrid"
+      });
+
+      startCrawling(); // frist time
     });    
 
-    console.log('Start crawling');
-    const hpo : HPO = new HPO();
-    await hpo.startCrawling();
-
-
+    
 
 }).catch(error => console.log(error));
+
+function startCrawling() {
+  log.info('Start crawling');
+  
+  const hpo : HpoService = new HpoService();
+  hpo.startCrawling()
+    .then(() => log.info('End crawling'))
+    .catch(e => log.error(e));
+
+}

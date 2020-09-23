@@ -11,25 +11,22 @@ import {
 
 @Entity()
 @Unique(["externalId"])
-export class Announcement {
-    
+export class City {
+
     @PrimaryGeneratedColumn()
     id!: number;
     
     @Column()
     externalId!: string;
+
+    @Column()
+    ineCode!: string;
     
     @Column()
-    url!: string;
+    name!: string;
     
     @Column()
-    publishedAt!: Date;
-    
-    @Column()
-    description!: string;
-    
-    @Column()
-    documentUrl!: string;
+    shortName!: string;
     
     @Column()
     @CreateDateColumn()

@@ -1,6 +1,19 @@
+# IDEs
 .idea/
 .vscode/
+.settings
+
+# Node & TS
 node_modules/
+.node_modules/
 build/
+build/*
+
+# API keys and secrets
+.env
+
+# Others 
 tmp/
 temp/
+
+

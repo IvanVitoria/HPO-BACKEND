@@ -1,13 +1,16 @@
 import puppeteer = require('puppeteer');
+import { Logger } from "tslog";
 
-export class Crawler {
+const log: Logger = new Logger();
+
+export class HpoCarwler { 
   
   constructor() {};
 
   async crawlResultsPage(pageNumber: number) : Promise<string[]> {     
     const HPO_URL = `http://www.registresolicitants.cat/registre/noticias/03_noticias.jsp?numpagactual=${pageNumber}`;
 
-    console.info(`Fetching URL: ${HPO_URL}`);  
+    log.info(`Fetching URL: ${HPO_URL}`);
 
     let links : string[] = [];
 
@@ -26,9 +29,9 @@ export class Crawler {
 
           await browser.close();
       } catch(error) {
-        console.error(error);
+        log.prettyError(error);
       } finally {
-        console.info(`Finished to crawl URL: ${HPO_URL}`);  
+        log.info(`Finished to crawl URL: ${HPO_URL}`);  
       }
 
       return links;
@@ -56,18 +59,22 @@ export class Crawler {
         result.push(strongTag.innerText.trim()); 
         
         // link
-        const tagP = divs[1].getElementsByTagName('p')[0];
-        const tagA = tagP.getElementsByTagName('a')[0];
-        result.push(tagA.href); 
-
+        const pList = divs[1].getElementsByTagName('p');
+        const tagAList = (pList && pList.length > 0) ? pList[0].getElementsByTagName('a') : divs[1].getElementsByTagName('a');
+        
+        if(tagAList && tagAList.length > 0) { 
+          result.push(tagAList[0].href);
+        } else {
+          log.warn(`Document link not found for announcement ID = ${announcementId}`);
+        }
+        
+        
         return result;
       }, container);
       
       const dateField = content[0];
       const descriptionField = content[1];
-      const documentLink = content[2];
-
-      //console.debug(`${dateField} - ${descriptionField} - ${documentLink}`);
+      const documentLink = (content.length > 2) ? content[2] : null ;
  
       await browser.close();
 
@@ -79,7 +86,7 @@ export class Crawler {
         document_url: documentLink
       }
     } catch(error) {
-      console.error(error);
+      log.prettyError(error);
     } 
   }
 
