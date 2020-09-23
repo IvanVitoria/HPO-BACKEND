@@ -5,9 +5,13 @@ import * as bodyParser from "body-parser";
 import {HpoService} from "./service/HpoService";
 import routes from "./api/route";
 import {schedule} from "node-cron"
+import { Logger } from "tslog";
+
+require('dotenv').config();
 
 
-const PORT = 3000;
+const log: Logger = new Logger();
+const PORT = process.env.API_PORT;
 
 createConnection().then(async connection => {
     const app: express.Application = express();
@@ -15,7 +19,7 @@ createConnection().then(async connection => {
     app.use("/", routes);
 
     app.listen(PORT, function () {
-      console.log(`Server is up and listening on port ${PORT}`);
+      log.info(`Server is up and listening on port ${PORT}`);
 
       const task = schedule('0 19 * * *', () => { // every day at 19:00
         startCrawling();
@@ -31,11 +35,11 @@ createConnection().then(async connection => {
 }).catch(error => console.log(error));
 
 function startCrawling() {
-  console.log('Start crawling');
+  log.info('Start crawling');
   
   const hpo : HpoService = new HpoService();
   hpo.startCrawling()
-    .then(() => console.log('End crawling'))
-    .catch(e => console.error(e));
+    .then(() => log.info('End crawling'))
+    .catch(e => log.error(e));
 
 }

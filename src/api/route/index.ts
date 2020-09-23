@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import announcement from "./announcement";
 import city from "./city";
 

@@ -1,6 +1,9 @@
 import {HpoCarwler} from "./HpoCarwler";
 import {Announcement} from "../entity/Announcement";
 import {getRepository} from "typeorm";
+import { Logger } from "tslog";
+
+const log: Logger = new Logger();
 
 
 export class HpoService {
@@ -13,11 +16,11 @@ export class HpoService {
 
         const initialPage : number = 1;
 
-        console.info(`\Crawler starts`);        
+        log.info(`Crawler starts`);        
                    
         await this.crawlPage(initialPage)
-        .then(() => console.info(`\Crawler finishes`))
-        .catch(e => console.error(e));
+        .then(() => log.info(`Crawler finishes`))
+        .catch(e => log.prettyError(e));
         
     }
 
@@ -26,12 +29,10 @@ export class HpoService {
     private async crawlPage(pageNumber : number) : Promise<void> {
         let crawledAnnouncements : number = 0;
 
-        console.info(`\n>>>>> Starting to Crawl restuls page ${pageNumber} \n`);
+        log.info(`>>>>> Starting to Crawl restuls page ${pageNumber}`);
     
         const crawler: HpoCarwler = new HpoCarwler();
         let links = await crawler.crawlResultsPage(pageNumber);
-
-        console.debug(links.join('\n'));
 
         if(links.length > 0) {
             let ids = this.extractAnnouncementIds(links);
@@ -41,33 +42,33 @@ export class HpoService {
 
                 const existingAnnouncement = await this.annoucementRepository.findOne({ where: { externalId: id } });
                 if(existingAnnouncement?.externalId) {
-                    console.info(`\nSkipping announcment ID = ${id} because already exists \n`);
+                    log.info(`Skipping announcment ID = ${id} because already exists`);
                 } else {
-                    console.info(`\n>>>>> Starting to Crawl announcment page ID = ${id} \n`);
+                    log.info(`>>>>> Starting to Crawl announcment page ID = ${id}`);
                 
                     await crawler.crawlAnnouncementPage(id)
                     .then(announcementData => {
                         if(announcementData) {
-                            console.debug('\nCrawled data: ', JSON.stringify(announcementData) + "\n");                           
+                            log.debug('Crawled data: ' + JSON.stringify(announcementData));                           
                             this.saveAnnouncement(announcementData);
                         } else {
-                            console.log(`ERROR: Unable to extract data from announcement ID = ${id}`);
+                            log.error(`Unable to extract data from announcement ID = ${id}`);
                         } 
                     });
                     
-                    console.info(`\n>>>>> Finished to Crawl announcment page ID = ${id} \n`);
+                    log.info(`>>>>> Finished to Crawl announcment page ID = ${id}`);
                     crawledAnnouncements++;
                 }
             }
 
         }
 
-        console.info(`\n<<<<< Finished to Crawl page ${pageNumber} with ${crawledAnnouncements} new announcements \n`);
+        log.info(`<<<<< Finished to Crawl page ${pageNumber} with ${crawledAnnouncements} new announcements`);
 
         if(crawledAnnouncements > 0) {
             pageNumber++;
             await this.crawlPage(pageNumber)
-            .catch(e => console.error(e));
+            .catch(e => log.prettyError(e));
             
         }
     }
@@ -80,8 +81,8 @@ export class HpoService {
         announcement.url = announcementData.url; 
         announcement.publishedAt = this.datify(announcementData.date);
         this.annoucementRepository.save(announcement)
-        .then( r => console.log("Saved a new Announcement with id: " + r.id))
-        .catch(e => console.error(e));
+        .then( r => log.info(`Saved a new Announcement with id: ${r.id}`))
+        .catch(e => log.prettyError(e));
     }
 
     

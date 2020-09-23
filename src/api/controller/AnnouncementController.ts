@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { Brackets, getRepository, ObjectLiteral } from "typeorm";
-
 import { Announcement } from "../../entity/Announcement";
+import { Logger } from "tslog";
+
+const log: Logger = new Logger();
 
 export class AnnouncementController {
 
   static readonly DEFAULT_PAST_DAYS : number = 90;
   
-
     static findAll = async (req: Request, res: Response) => {
   
       const announcementRepository = getRepository(Announcement);
@@ -25,7 +26,7 @@ export class AnnouncementController {
         cities = (<string>req.query.cities).split(',');
       }
       
-      console.info(`Filtering announcements by cities?: ${cities} and publishedAfter: ${publishedAfter}`);
+      log.info(`Filtering announcements by cities?: ${cities} and publishedAfter: ${publishedAfter}`);
 
       let builder = announcementRepository
         .createQueryBuilder("announcement")
@@ -43,7 +44,6 @@ export class AnnouncementController {
               }
 
               whereValue[cityKey] = `%${city}%`;
-              //console.log(`[${cityKey}] = ${whereValue[cityKey]}`);
 
               if(ind == 0) {
                 qb = qb.where(whereString, whereValue);
@@ -56,15 +56,15 @@ export class AnnouncementController {
 
       builder.orderBy("announcement.publishedAt", "DESC");
 
-      console.log(`\n SQL: \n ${builder.getSql()} \n`);
+      log.debug(`\n SQL: \n ${builder.getSql()} \n`);
       
       await builder.getMany()
         .then(a => {
-          console.log(`Returning ${a.length} announcements`);
+          log.info(`Returning ${a.length} announcements`);
           res.status(200).send(a);
         })
         .catch(e => {
-          console.error(e);
+          log.prettyError(e);
           res.status(500).send();
         });
    }

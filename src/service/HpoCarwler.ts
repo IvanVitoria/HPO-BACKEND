@@ -1,13 +1,16 @@
 import puppeteer = require('puppeteer');
+import { Logger } from "tslog";
 
-export class HpoCarwler {
+const log: Logger = new Logger();
+
+export class HpoCarwler { 
   
   constructor() {};
 
   async crawlResultsPage(pageNumber: number) : Promise<string[]> {     
     const HPO_URL = `http://www.registresolicitants.cat/registre/noticias/03_noticias.jsp?numpagactual=${pageNumber}`;
 
-    console.info(`Fetching URL: ${HPO_URL}`);  
+    log.info(`Fetching URL: ${HPO_URL}`);
 
     let links : string[] = [];
 
@@ -26,9 +29,9 @@ export class HpoCarwler {
 
           await browser.close();
       } catch(error) {
-        console.error(error);
+        log.prettyError(error);
       } finally {
-        console.info(`Finished to crawl URL: ${HPO_URL}`);  
+        log.info(`Finished to crawl URL: ${HPO_URL}`);  
       }
 
       return links;
@@ -62,7 +65,7 @@ export class HpoCarwler {
         if(tagAList && tagAList.length > 0) { 
           result.push(tagAList[0].href);
         } else {
-          console.log(`WARN: document link not found for announcement ID = ${announcementId}`);
+          log.warn(`Document link not found for announcement ID = ${announcementId}`);
         }
         
         
@@ -83,7 +86,7 @@ export class HpoCarwler {
         document_url: documentLink
       }
     } catch(error) {
-      console.error(error);
+      log.prettyError(error);
     } 
   }
 
