@@ -16,7 +16,9 @@
    "author": "Ivan Vitoria",
    "license": "GPLV3",
    "dependencies": {
+      "@types/cors": "^2.8.7",
       "@types/express": "^4.17.8",
+      "cors": "^2.8.5",
       "dotenv": "^8.2.0",
       "express": "^4.17.1",
       "mysql": "^2.18.1",
