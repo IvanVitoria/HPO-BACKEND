@@ -11,7 +11,12 @@ export class CityController {
     static findAll = async (req: Request, res: Response) => {
     
         const cityRepository = getRepository(City);
-        await cityRepository.find()
+        await cityRepository.find({
+            order: {
+                name: "ASC",
+            }
+            
+        })
             .then(cities => {
                 log.info(`Returning ${cities.length} cities`);
                 res.status(200).send(cities);
